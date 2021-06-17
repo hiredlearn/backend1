@@ -1,6 +1,8 @@
 // SaleItem is holds price values
 // ASale holds item name and attributes
 // SaleItem.sku is an indicator that the configurable comes AFTER (not before)
+For I := 0 to High(ASale.items) 
+SaleItem := ASale.items[I];
 
 if SaleItem.product_type='simple' then
   begin
