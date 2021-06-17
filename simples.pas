@@ -3,10 +3,10 @@
 // SaleItem.sku is an indicator that the configurable comes AFTER (not before)
 For I := 0 to High(ASale.items) 
 Begin
-SaleItem := ASale.items[I];
+  SaleItem := ASale.items[I];
 
-if SaleItem.product_type='simple' then
-  begin
+    if SaleItem.product_type='simple' then
+    begin
       if (I>0) and (ASale.items[I-1].product_type='configurable') then
       begin
         SaleItem:=ASale.items[I-1]; 
