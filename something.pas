@@ -6,11 +6,11 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
   EntityConcurrence := TEntityConcurrence.Create(trCad);
   try
     // Here is the table of the operation being treated
-    EntityConcurrence.GetModel.Table.Value := 'VENDA';
+    EntityConcurrence.GetModel.Table.Value := 'SALE';
     // This is the operation being treated - Order Checking
-    EntityConcurrence.GetModel.Operation.Value := 'CONFERENCIA VENDA';
+    EntityConcurrence.GetModel.Operation.Value := 'SALE CONFERENCE';
     // This is the key of the registry being treated at the table before mentioned
-    EntityConcurrence.GetModel.Key.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
+    EntityConcurrence.GetModel.Key.Value := qryConsulta.FieldByName('VIEW_CODE').AsInteger;
     // Here is being checked in the database if there is a 
     // treatment being made on this operation over this registry
     // This is the part responsible to check if there is someone
