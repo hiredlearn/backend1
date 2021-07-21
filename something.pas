@@ -36,7 +36,7 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
           'There is a user-initiated unfinished conference. Do you want to invalidate it and continue?',
           [
             // From the USU_CODIGO is retrieved the user name (USU_NOME) from table USUARIO (USER)
-            MDB.Search('USUARIO', 'USU_CODIGO', 'USU_NOME', EntityConcurrence.GetModel.User.Value, trCad),
+            MDB.Search('USER', 'USER_CODE', 'USERNAME', EntityConcurrence.GetModel.User.Value, trCad),
             // Here is the moment that the order checking initiated from the other user
             EntityConcurrence.GetModel.Data.AsString
           ]
@@ -48,20 +48,20 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
       end;
       // If the user answers that he wants to cancel the other checking, the other checking will be
       // erased from the database
-      EntityConcurrence.Excluir;
+      EntityConcurrence.Delete;
     end;
     // The fields are cleared and reevaluted
-    EntityConcurrence.LimparModel;
-    EntityConcurrence.GetModel.Tabela.Value := 'VENDA';
-    EntityConcurrence.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
-    EntityConcurrence.GetModel.Chave.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
-    EntityConcurrence.GetModel.Usuario.Value := UsuarioAtual;
+    EntityConcurrence.CleanModel;
+    EntityConcurrence.GetModel.Table.Value := 'VENDA';
+    EntityConcurrence.GetModel.Operation.Value := 'CONFERENCIA VENDA';
+    EntityConcurrence.GetModel.Key.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
+    EntityConcurrence.GetModel.User.Value := CurrentUser;
     // It is stored in the database
     EntityConcurrence.Gravar;
     EntityConcurrence.Transaction.CommitRetaining;
-    CON_CODIGO := EntidadeConcorrencia.Model.Codigo.Value;
+    CON_CODE := EntityConcurrence.Model.Code.Value;
   finally
-    EntidadeConcorrencia.Free;
+    EntityConcurrence.Free;
   end;
 
   // Here the conference screen is instantiated
