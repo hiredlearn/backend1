@@ -73,71 +73,71 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
 [...]
 
 
-untMovConferenciaProduto.pas file
-TFormMovConferenciaProduto = class(TFormBasico)
+untMovProductConference.pas file
+TFormMovProductConference = class(TFormBasic)
 [...]
 public
   { Public declarations }
-  CON_CODIGO: Integer;
+  CON_CODE: Integer;
 [...]
 
 // Here is the code that will be executed when the cancel button is clicked
 // on in the conference screen
-procedure TFormMovConferenciaProduto.acCancelarExecute(Sender: TObject);
+procedure TFormMovProductConference.acCancelExecute(Sender: TObject);
 var
-  EntidadeConcorrencia: TEntidadeConcorrencia;
+  EntityConcurrence: TEntityConcurrence;
 begin
   ModalResult:=mrCancel;
-  EntityConcurrence := TEntityConcurrence.Create(TRCadastro);
+  EntityConcurrence := TEntityConcurrence.Create(TRRegister);
   try
     // When canceled the concurrence in the database will be deleted
-    EntityConcurrence.Excluir(CON_CODIGO);
+    EntityConcurrence.Excluir(CON_CODE);
   finally
     EntityConcurrence.Free;
   end;
 end;
 
 // Here is the code executed when the save button is clicked
-procedure TFormMovConferenciaProduto.btnGravarClick(Sender: TObject);
-@@ -732,7 +742,44 @@ procedure TFormMovConferenciaProduto.btnGravarClick(Sender: TObject);
+procedure TFormMovProductConference.btnGravarClick(Sender: TObject);
+@@ -732,7 +742,44 @@ procedure TFormMovProductConference.btnRecordClick(Sender: TObject);
   end;
 var
   TrataPacote,MODULO_PACOTE,AlterouLote: Boolean;
   EntityConcurrence: TEntityConcurrence;
 begin
   // As explained before
-  EntityConcurrence := EntityConcurrence.Create(TRCadastro);
+  EntityConcurrence := EntityConcurrence.Create(TRRegister);
   try
-    EntityConcurrence.GetModel.Tabela.Value := 'VENDA';
-    EntityConcurrence.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
-    EntityConcurrence.GetModel.Chave.Value := VD_CODIGO;
+    EntityConcurrence.GetModel.Table.Value := 'VENDA';
+    EntityConcurrence.GetModel.Operation.Value := 'CONFERENCIA VENDA';
+    EntityConcurrence.GetModel.Key.Value := VD_CODE;
     EntityConcurrence.LerPorCamposEspecificos(
       [
-        EntidadeConcorrencia.GetModel.Tabela,
-        EntidadeConcorrencia.GetModel.Operacao,
-        EntityConcurrence.GetModel.Chave
+        EntidadeConcorrencia.GetModel.Table,
+        EntidadeConcorrencia.GetModel.Operation,
+        EntityConcurrence.GetModel.Key
       ]
     );
     // If there ins't a registry in the database that represents the checking of this order
     // then it means someone canceled this checking and the checking that he/ she started
-    if EntityConcurrence.Model.Codigo.IsEmpty then
+    if EntityConcurrence.Model.Code.IsEmpty then
     begin
       // In this case the user is warned and can't continue the process
       // Only cancel it and start again
-      dlgAviso('Conferência inválidada. Por favor feche a tela e comece a conferência da venda novamente');
+      dlgNotice('Invalid conference. Please close the screen and start the sale conference again.');
       Exit;
     end;
     // If there is a registry it is verified if is the same as the current one the user is doing
-    if EntityConcurrence.Model.Codigo.Value <> CON_CODIGO then
+    if EntityConcurrence.Model.Code.Value <> CON_CODE then
     begin
       // If it ins't the user is reported that the current checking was invalidated by the user X at moment Y
       // And that he/ she can only cancel the checking and start again
-      dlgAviso(
+      dlgNotice(
         Self,
         Format(
           'Invalid User Conference. Please close the screen and start the sale conference again.',
           [
-            MDB.Busca('USUARIO', 'USU_CODIGO', 'USU_NOME', EntityConcurrence.GetModel.Usuario.Value, TRCadastro),
+            MDB.Search('USER', 'USER_CODE', 'USERNAME', EntityConcurrence.GetModel.User.Value, TRCadastro),
             EntityConcurrence.GetModel.Data.AsString
           ]
         )
