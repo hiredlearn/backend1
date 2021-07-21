@@ -1,4 +1,4 @@
-MovementSalesExport.pas file
+SalesMovementExport.pas file
 // This is the event that will be triggered when the conference button is clicked
 procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
 [...]
@@ -52,12 +52,12 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
     end;
     // The fields are cleared and reevaluted
     EntityConcurrence.CleanModel;
-    EntityConcurrence.GetModel.Table.Value := 'VENDA';
-    EntityConcurrence.GetModel.Operation.Value := 'CONFERENCIA VENDA';
-    EntityConcurrence.GetModel.Key.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
+    EntityConcurrence.GetModel.Table.Value := 'SALE';
+    EntityConcurrence.GetModel.Operation.Value := 'SALE CONFERENCE';
+    EntityConcurrence.GetModel.Key.Value := qryConsultation.FieldByName('SALE_CODE').AsInteger;
     EntityConcurrence.GetModel.User.Value := CurrentUser;
     // It is stored in the database
-    EntityConcurrence.Gravar;
+    EntityConcurrence.Record;
     EntityConcurrence.Transaction.CommitRetaining;
     CON_CODE := EntityConcurrence.Model.Code.Value;
   finally
@@ -65,11 +65,11 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
   end;
 
   // Here the conference screen is instantiated
-  FormConf:=TFormMovConferenciaProduto.Create(Nil);
+  FormConf:=TFormMovProductConference.Create(Nil);
   // A procedure that must be executed according to our framework
-  FormConf.ExecutarAntesShow;
+  FormConf.PerformBeforeShow;
   // Here is passed the concurrence code to a screen variable to be handled inside there
-  FormConf.CON_CODIGO := CON_CODIGO;
+  FormConf.CON_CODE := CON_CODE;
 [...]
 
 
@@ -91,7 +91,7 @@ begin
   EntityConcurrence := TEntityConcurrence.Create(TRRegister);
   try
     // When canceled the concurrence in the database will be deleted
-    EntityConcurrence.Excluir(CON_CODE);
+    EntityConcurrence.Delete(CON_CODE);
   finally
     EntityConcurrence.Free;
   end;
@@ -102,16 +102,16 @@ procedure TFormMovProductConference.btnGravarClick(Sender: TObject);
 @@ -732,7 +742,44 @@ procedure TFormMovProductConference.btnRecordClick(Sender: TObject);
   end;
 var
-  TrataPacote,MODULO_PACOTE,AlterouLote: Boolean;
+  TreatsPackage,MODULE_PACKAGE,AlteredBatch: Boolean;
   EntityConcurrence: TEntityConcurrence;
 begin
   // As explained before
   EntityConcurrence := EntityConcurrence.Create(TRRegister);
   try
-    EntityConcurrence.GetModel.Table.Value := 'VENDA';
-    EntityConcurrence.GetModel.Operation.Value := 'CONFERENCIA VENDA';
-    EntityConcurrence.GetModel.Key.Value := VD_CODE;
-    EntityConcurrence.LerPorCamposEspecificos(
+    EntityConcurrence.GetModel.Table.Value := 'SALE';
+    EntityConcurrence.GetModel.Operation.Value := 'SALE CONFERENCE';
+    EntityConcurrence.GetModel.Key.Value := SALE_CODE;
+    EntityConcurrence.ReadBySpecificFeilds(
       [
         EntidadeConcorrencia.GetModel.Table,
         EntidadeConcorrencia.GetModel.Operation,
@@ -137,7 +137,7 @@ begin
         Format(
           'Invalid User Conference. Please close the screen and start the sale conference again.',
           [
-            MDB.Search('USER', 'USER_CODE', 'USERNAME', EntityConcurrence.GetModel.User.Value, TRCadastro),
+            MDB.Search('USER', 'USER_CODE', 'USERNAME', EntityConcurrence.GetModel.User.Value, TRRegistration),
             EntityConcurrence.GetModel.Data.AsString
           ]
         )
@@ -145,7 +145,7 @@ begin
       Exit;
     end;
     // If it ins't the case for any above situations the registry is deleted
-    EntityConcurrence.Excluir;
+    EntityConcurrence.Delete;
   finally
     EntityConcurrence.Free;
   end;
