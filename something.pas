@@ -98,7 +98,7 @@ begin
 end;
 
 // Here is the code executed when the save button is clicked
-procedure TFormMovProductConference.btnGravarClick(Sender: TObject);
+procedure TFormMovProductConference.btnRecordClick(Sender: TObject);
 @@ -732,7 +742,44 @@ procedure TFormMovProductConference.btnRecordClick(Sender: TObject);
   end;
 var
