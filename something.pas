@@ -1,44 +1,44 @@
-UntMovimentoVendasExportacao.pas file
+MovementSalesExport.pas file
 // This is the event that will be triggered when the conference button is clicked
-procedure TFormMovimentoVendasExportacao.btnConferenciaClick(Sender: TObject);
+procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
 [...]
   // This is a class that facilitates coding against the database
-  EntidadeConcorrencia := TEntidadeConcorrencia.Create(trCad);
+  EntityConcurrence := TEntityConcurrence.Create(trCad);
   try
     // Here is the table of the operation being treated
-    EntidadeConcorrencia.GetModel.Tabela.Value := 'VENDA';
+    EntityConcurrence.GetModel.Table.Value := 'VENDA';
     // This is the operation being treated - Order Checking
-    EntidadeConcorrencia.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
+    EntityConcurrence.GetModel.Operation.Value := 'CONFERENCIA VENDA';
     // This is the key of the registry being treated at the table before mentioned
-    EntidadeConcorrencia.GetModel.Chave.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
+    EntityConcurrence.GetModel.Key.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
     // Here is being checked in the database if there is a 
     // treatment being made on this operation over this registry
     // This is the part responsible to check if there is someone
     // checking this order currently
-    EntidadeConcorrencia.LerPorCamposEspecificos(
+    EntityConcurrence.ReadBySpecificFeilds(
       [
-        EntidadeConcorrencia.GetModel.Tabela,
-        EntidadeConcorrencia.GetModel.Operacao,
-        EntidadeConcorrencia.GetModel.Chave
+        EntityConcurrence.GetModel.Table,
+        EntityConcurrence.GetModel.Operation,
+        EntityConcurrence.GetModel.Key
       ]
     );
     // If there is (Leu is Read, that it was found in the database)
-    if EntidadeConcorrencia.Leu then
+    if EntityConcurrence.Read then
     begin
       // If it was found the user will be warned and asked if he wants to cancel
       // the checking that other user initiated at other moment (there is a situation
       // covered here that is when a user begins the order checking and doesn't finish it
       // maybe turning off the computer, there will be a registry in the database but this
       // doesn't mean that the other user is currently checking the order)
-      if not dlgPergunta(
+      if not dlgQuestion(
         Self,
         Format(
-          'Há uma conferência não finalizada iniciada pelo usuário %s às %s. Deseja invalida-la e continuar?',
+          'There is a user-initiated unfinished conference. Do you want to invalidate it and continue?',
           [
             // From the USU_CODIGO is retrieved the user name (USU_NOME) from table USUARIO (USER)
-            MDB.Busca('USUARIO', 'USU_CODIGO', 'USU_NOME', EntidadeConcorrencia.GetModel.Usuario.Value, trCad),
+            MDB.Search('USUARIO', 'USU_CODIGO', 'USU_NOME', EntityConcurrence.GetModel.User.Value, trCad),
             // Here is the moment that the order checking initiated from the other user
-            EntidadeConcorrencia.GetModel.Data.AsString
+            EntityConcurrence.GetModel.Data.AsString
           ]
         )
       ) then
@@ -48,17 +48,17 @@ procedure TFormMovimentoVendasExportacao.btnConferenciaClick(Sender: TObject);
       end;
       // If the user answers that he wants to cancel the other checking, the other checking will be
       // erased from the database
-      EntidadeConcorrencia.Excluir;
+      EntityConcurrence.Excluir;
     end;
     // The fields are cleared and reevaluted
-    EntidadeConcorrencia.LimparModel;
-    EntidadeConcorrencia.GetModel.Tabela.Value := 'VENDA';
-    EntidadeConcorrencia.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
-    EntidadeConcorrencia.GetModel.Chave.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
-    EntidadeConcorrencia.GetModel.Usuario.Value := UsuarioAtual;
+    EntityConcurrence.LimparModel;
+    EntityConcurrence.GetModel.Tabela.Value := 'VENDA';
+    EntityConcurrence.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
+    EntityConcurrence.GetModel.Chave.Value := qryConsulta.FieldByName('VD_CODIGO').AsInteger;
+    EntityConcurrence.GetModel.Usuario.Value := UsuarioAtual;
     // It is stored in the database
-    EntidadeConcorrencia.Gravar;
-    EntidadeConcorrencia.Transaction.CommitRetaining;
+    EntityConcurrence.Gravar;
+    EntityConcurrence.Transaction.CommitRetaining;
     CON_CODIGO := EntidadeConcorrencia.Model.Codigo.Value;
   finally
     EntidadeConcorrencia.Free;
@@ -88,12 +88,12 @@ var
   EntidadeConcorrencia: TEntidadeConcorrencia;
 begin
   ModalResult:=mrCancel;
-  EntidadeConcorrencia := TEntidadeConcorrencia.Create(TRCadastro);
+  EntityConcurrence := TEntityConcurrence.Create(TRCadastro);
   try
     // When canceled the concurrence in the database will be deleted
-    EntidadeConcorrencia.Excluir(CON_CODIGO);
+    EntityConcurrence.Excluir(CON_CODIGO);
   finally
-    EntidadeConcorrencia.Free;
+    EntityConcurrence.Free;
   end;
 end;
 
@@ -103,24 +103,24 @@ procedure TFormMovConferenciaProduto.btnGravarClick(Sender: TObject);
   end;
 var
   TrataPacote,MODULO_PACOTE,AlterouLote: Boolean;
-  EntidadeConcorrencia: TEntidadeConcorrencia;
+  EntityConcurrence: TEntityConcurrence;
 begin
   // As explained before
-  EntidadeConcorrencia := TEntidadeConcorrencia.Create(TRCadastro);
+  EntityConcurrence := EntityConcurrence.Create(TRCadastro);
   try
-    EntidadeConcorrencia.GetModel.Tabela.Value := 'VENDA';
-    EntidadeConcorrencia.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
-    EntidadeConcorrencia.GetModel.Chave.Value := VD_CODIGO;
-    EntidadeConcorrencia.LerPorCamposEspecificos(
+    EntityConcurrence.GetModel.Tabela.Value := 'VENDA';
+    EntityConcurrence.GetModel.Operacao.Value := 'CONFERENCIA VENDA';
+    EntityConcurrence.GetModel.Chave.Value := VD_CODIGO;
+    EntityConcurrence.LerPorCamposEspecificos(
       [
         EntidadeConcorrencia.GetModel.Tabela,
         EntidadeConcorrencia.GetModel.Operacao,
-        EntidadeConcorrencia.GetModel.Chave
+        EntityConcurrence.GetModel.Chave
       ]
     );
     // If there ins't a registry in the database that represents the checking of this order
     // then it means someone canceled this checking and the checking that he/ she started
-    if EntidadeConcorrencia.Model.Codigo.IsEmpty then
+    if EntityConcurrence.Model.Codigo.IsEmpty then
     begin
       // In this case the user is warned and can't continue the process
       // Only cancel it and start again
@@ -128,24 +128,24 @@ begin
       Exit;
     end;
     // If there is a registry it is verified if is the same as the current one the user is doing
-    if EntidadeConcorrencia.Model.Codigo.Value <> CON_CODIGO then
+    if EntityConcurrence.Model.Codigo.Value <> CON_CODIGO then
     begin
       // If it ins't the user is reported that the current checking was invalidated by the user X at moment Y
       // And that he/ she can only cancel the checking and start again
       dlgAviso(
         Self,
         Format(
-          'Conferência inválidada pelo usuário %s às %s. Por favor feche a tela e comece a conferência da venda novamente',
+          'Invalid User Conference. Please close the screen and start the sale conference again.',
           [
-            MDB.Busca('USUARIO', 'USU_CODIGO', 'USU_NOME', EntidadeConcorrencia.GetModel.Usuario.Value, TRCadastro),
-            EntidadeConcorrencia.GetModel.Data.AsString
+            MDB.Busca('USUARIO', 'USU_CODIGO', 'USU_NOME', EntityConcurrence.GetModel.Usuario.Value, TRCadastro),
+            EntityConcurrence.GetModel.Data.AsString
           ]
         )
       );
       Exit;
     end;
     // If it ins't the case for any above situations the registry is deleted
-    EntidadeConcorrencia.Excluir;
+    EntityConcurrence.Excluir;
   finally
-    EntidadeConcorrencia.Free;
+    EntityConcurrence.Free;
   end;
