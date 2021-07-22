@@ -54,7 +54,7 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
     EntityConcurrence.CleanModel;
     EntityConcurrence.GetModel.Table.Value := 'SALE';
     EntityConcurrence.GetModel.Operation.Value := 'SALE CONFERENCE';
-    EntityConcurrence.GetModel.Key.Value := qryConsultation.FieldByName('SALE_CODE').AsInteger;
+    EntityConcurrence.GetModel.Key.Value := Query.FieldByName('SALE_CODE').AsInteger;
     EntityConcurrence.GetModel.User.Value := CurrentUser;
     // It is stored in the database
     EntityConcurrence.Record;
