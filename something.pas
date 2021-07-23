@@ -10,7 +10,7 @@ procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
     // This is the operation being treated - Order Checking
     EntityConcurrence.GetModel.Operation.Value := 'SALE CONFERENCE';
     // This is the key of the registry being treated at the table before mentioned
-    EntityConcurrence.GetModel.Key.Value := Query.FieldByName('VIEW_CODE').AsInteger;
+    EntityConcurrence.GetModel.Key.Value := Query.FieldByName('SALE_CODE').AsInteger;
     // Here is being checked in the database if there is a 
     // treatment being made on this operation over this registry
     // This is the part responsible to check if there is someone
