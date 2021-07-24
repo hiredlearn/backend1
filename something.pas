@@ -1,6 +1,6 @@
 SalesMovementExport.pas file
 // This is the event that will be triggered when the conference button is clicked
-procedure TFormMovementSalesExport.btnConferenceClick(Sender: TObject);
+procedure TFormExportSalesMovement.btnConferenceClick(Sender: TObject);
 [...]
   // This is a class that facilitates coding against the database
   EntityConcurrence := TEntityConcurrence.Create(trCad);
